@@ -34,11 +34,23 @@ We will need to check in descending order if the following exist:
         - Take the top card from the straight to represent hand strength
         - (Optional maybe suit as back-up???)
 - Four of a Kind
+    - Check if 4 parts of the hand match [a,a,a,a,b] or [b,a,a,a,a]
+    - Compare to other hands by comparing 'a' then 'b'
 - Full House
+    - Check if 3 of a kind and a pair exist
 - Flush
-    - If 
+    - Reference above flush method
 - Straight
+    - Reference above straight method
 - Three of a Kind
+    - Check if [a,a,a,c,b] or [c,a,a,a,b] or [c,b,a,a,a]
+    - Compare by 'a', then 'c', then 'c'
 - Two Pair
+    - Check if [b,b,a,a,c] or [b,b,c,a,a] or [c,b,b,a,a]
+    - Compare by 'a' then 'b' then 'c'
 - Pair
+    - Check if [a,a,d,c,b] or [d,a,a,c,b] or [d,c,a,a,b] or [d,c,b,a,a]
+    - Compare by 'a' then 'b', then 'c', then 'd'
 - High Card
+    - Hand is already sorted so [e,d,c,b,a]
+    - Compare by a, b, c, d, e
