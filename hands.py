@@ -1,8 +1,8 @@
-from typing import List, Tuple
+from typing import Tuple
 
 from utils import mod_hand
 
-def flush(hand : List[int][5]) -> int:
+def flush(hand : list[int]) -> int:
     """
     Determines if a hand has a flush 
     Assumes hand sorted and modded 4
@@ -16,7 +16,7 @@ def flush(hand : List[int][5]) -> int:
     else:
         -1
 
-def straight(hand : List[int][5]) -> int:
+def straight(hand : list[int]) -> int:
     """
     Determines if a hand has a straight
     Assumes hand sorted and modded 13
@@ -30,7 +30,7 @@ def straight(hand : List[int][5]) -> int:
     else:
         return -1
 
-def four_of_a_kind(hand: List[int][5]) -> Tuple[int, int]:
+def four_of_a_kind(hand: list[int]) -> Tuple[int, int]:
     """
     Determines if a hand has a four of a kind
     Assumes hand sorted and modded 13
@@ -46,7 +46,7 @@ def four_of_a_kind(hand: List[int][5]) -> Tuple[int, int]:
     else:
         return (-1, -1)
 
-def full_house(hand: List[int][5]) -> Tuple[int, int]:
+def full_house(hand: list[int]) -> Tuple[int, int]:
     """
     Determines if a hand has a full house
     Assumes hand sorted and modded 13
@@ -62,7 +62,7 @@ def full_house(hand: List[int][5]) -> Tuple[int, int]:
     else:
         return (-1,-1)
 
-def three_of_a_kind(hand: List[int][5]) -> Tuple[int, int, int]:
+def three_of_a_kind(hand: list[int]) -> Tuple[int, int, int]:
     """
     Determines if a hand has a three of a kind
     Assumes hand sorted and modded 13
@@ -80,7 +80,7 @@ def three_of_a_kind(hand: List[int][5]) -> Tuple[int, int, int]:
     else:
         return (-1, -1, -1)
 
-def two_pair(hand: List[int][5]) -> Tuple[int, int, int]:
+def two_pair(hand: list[int]) -> Tuple[int, int, int]:
     """
     Determines if a hand has a two pair
     Assumes hand sorted and modded 13
@@ -101,7 +101,7 @@ def two_pair(hand: List[int][5]) -> Tuple[int, int, int]:
     else:
         return (-1, -1, -1)
 
-def pair(hand: List[int][5]) -> Tuple[int, int, int, int]:
+def pair(hand: list[int]) -> Tuple[int, int, int, int]:
     """
     Determines if a hand has a pair
     Assumes hand sorted and modded 13
@@ -121,7 +121,7 @@ def pair(hand: List[int][5]) -> Tuple[int, int, int, int]:
     return (-1, -1, -1, -1)
 
 # TODO: Can likely reduce size of return int. Requires further investigation
-def RankHand(hand: List[str][5]) -> int:
+def RankHand(hand: list[int]) -> int:
     """
     Returns the "value" of the hand, high => better hand
 

@@ -160,7 +160,3 @@ def hand_to_number_hand(hand: list[str]) -> list[int]:
 
 def hand_to_card_hand(hand: list[int]) -> list[str]:
     return [reverse_card_trans[x] for x in hand]
-
-for i in range(52):
-    print(i, end=": ")
-    pretty_print_int_card(i)
