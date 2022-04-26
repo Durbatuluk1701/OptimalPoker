@@ -62,4 +62,12 @@ The number returned will be formatted as such
 - Left-Shift 30 for 9 types of hand + 20 = 5*4 where bin(13) = 1101 = 4 bits
 </details>
 
-### Step 2: Undecided
+### Step 2: Create a actual Poker Game
+- Model this as a python class with the following features
+    - Deal/Reset Hands
+    - Shuffle the Deck
+    - Flop, Run, River
+    - Calculate Winner
+    - Restart
+    - Start
+    - Bet per turn (later)
