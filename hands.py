@@ -188,3 +188,11 @@ def RankHand(hand: list[int]) -> int:
     # Check high card/default case
     [e, d, c, b, a] = hand
     return (a << 16) | (b << 12) | (c << 8) | (d << 4) | e
+
+def CompareHands(handA, handB) -> bool:
+    """
+    Takes 2 hands 'a' and 'b'
+    Returns true if 'a' is better than 'b' and would win
+    False otherwise
+    """
+    return RankHand(handA) > RankHand(handB)

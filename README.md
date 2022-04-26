@@ -14,6 +14,8 @@ Poker related code, not really sure yet
     - With only roughly 2.6 million possible outputs each hand can be assigned a value from 0 to 2598960 showing its value.
     - Even less if you account for the fact that some hands are considered equal
 - Ranker will just take hands **x** vs **y**, calculate integer value for **x** and **y** and then compare.
+<details>
+<summary> Step 1 Details </summary>
 
 ### Step 1.1: Unique Numeric Card Encodings
 Calculate using the Chinese Remainder Theorem
@@ -54,7 +56,10 @@ We will need to check in descending order if the following exist:
 - High Card
     - Hand is already sorted so [e,d,c,b,a]
     - Compare by a, b, c, d, e
-    
+
 The number returned will be formatted as such
 - (1 << 30) | Hand_Encoding
 - Left-Shift 30 for 9 types of hand + 20 = 5*4 where bin(13) = 1101 = 4 bits
+</details>
+
+### Step 2: Undecided
