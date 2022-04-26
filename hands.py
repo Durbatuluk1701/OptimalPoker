@@ -1,6 +1,6 @@
 from typing import Tuple
 
-from utils import mod_hand
+from utils import mod_hand, val_to_str
 
 def flush(hand : list[int]) -> int:
     """
@@ -14,7 +14,7 @@ def flush(hand : list[int]) -> int:
     if (i == j == k == l == m):
         return i
     else:
-        -1
+        return -1
 
 def straight(hand : list[int]) -> int:
     """
@@ -173,7 +173,7 @@ def RankHand(hand: list[int]) -> int:
     # Check Three of a kind (3 a's, b > c)
     (a, b, c) = three_of_a_kind(mod13_hand)
     if (a != -1):
-        return (1 << 25) | b << 4 | c
+        return (1 << 25) | a << 8 | b << 4 | c
 
     # Check two-pair (2 a's, 2 b's, c; a > b)
     (a, b, c) = two_pair(mod13_hand)
@@ -188,6 +188,57 @@ def RankHand(hand: list[int]) -> int:
     # Check high card/default case
     [e, d, c, b, a] = hand
     return (a << 16) | (b << 12) | (c << 8) | (d << 4) | e
+
+def DecodeHand(handCode : int) -> str:
+    """
+    Takes a hand code and returns a string describing the hand
+    """
+    if (handCode & (1 << 30)):
+        # Straight flush of some type
+        # Retrieve value from last 4 bits
+        cardVal = val_to_str(handCode & 15)
+        return f"Straight Flush - {cardVal} High"
+    if (handCode & (1 << 29)):
+        # Four of a kind
+        fourKey = val_to_str((handCode >> 4) & 15)
+        lastKey = val_to_str(handCode & 15)
+        return f"Four of a kind - {fourKey} with {lastKey}"
+    if (handCode & (1 << 28)):
+        # Full house
+        threeKey = val_to_str((handCode >> 4) & 15)
+        twoKey = val_to_str(handCode & 15)
+        return f"Full House - {threeKey}s full of {twoKey}s"
+    if (handCode & (1 << 27)):
+        # Flush
+        [high5,high4,high3,high2,high1] = [
+            val_to_str((handCode >> 4*i) & 15) for i in range(5)
+        ]
+        # Need to show all of the flushes cards
+        return f"Flush - {high1}, {high2}, {high3}, {high4}, {high5}"
+    if (handCode & (1 << 26)):
+        # Straight
+        straightKey = val_to_str(handCode & 15)
+        return f"Straight - {straightKey} High"
+    if (handCode & (1 << 25)):
+        # Three of a kind
+        three_part = val_to_str((handCode >> 8) & 15)
+        high1 = val_to_str((handCode >> 4) & 15)
+        high2 = val_to_str(handCode & 15)
+        return f"Three of a kind - 3 {three_part}s, {high1}, {high2}"
+    if (handCode & (1 << 24)):
+        # Two pair
+        highPair = val_to_str((handCode >> 8) & 15)
+        lowPair = val_to_str((handCode >> 4) & 15)
+        high1 = val_to_str(handCode & 15)
+        return f"Two Pair - {highPair}s, {lowPair}s, {high1}"
+    if (handCode & (1 << 23)):
+        # Single pair
+        [h3, h2, h1, pair] = [val_to_str((handCode >> 4*i) & 15) for i in range(4)]
+        return f"Pair - {pair}s, {h1}, {h2}, {h3}, {h4}"
+    else:
+        # must be only a highcard
+        [h5, h4,h3,h2,h1] = [val_to_str((handCode >> 4*i) & 15) for i in range(5)]
+        return f"High Card - {h1}, {h2}, {h3}, {h4}, {h5}"
 
 def CompareHands(handA, handB) -> bool:
     """
