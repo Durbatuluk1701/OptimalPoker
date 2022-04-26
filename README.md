@@ -54,3 +54,7 @@ We will need to check in descending order if the following exist:
 - High Card
     - Hand is already sorted so [e,d,c,b,a]
     - Compare by a, b, c, d, e
+    
+The number returned will be formatted as such
+- (1 << 30) | Hand_Encoding
+- Left-Shift 30 for 9 types of hand + 20 = 5*4 where bin(13) = 1101 = 4 bits
