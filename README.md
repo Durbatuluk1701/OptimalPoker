@@ -29,7 +29,7 @@ We will need to check in descending order if the following exist:
     - First Check Flush == True : \fch c % 4 == x (so all suits must match)
     - Second Check Straight == True : 
         - Method to verify a straight: 
-        [a,b,c,d,e] % 13 -> [i,j,k,l,m] sort that -> [q,r,s,t,u] then compare [q, q+1, q+2,q+3,q+4] to [q,r,s,t,u]. If true then it is straight, else it is not
+        [a,b,c,d,e] % 13 -> [i,j,k,l,m] sort that -> [q,r,s,t,u] then compare [q, q+1, q+2,q+3,q+4] to [q,r,s,t,u]. If true then it is straight, else it is not (Exception for A low straight [q, q+1, q+2, q+3, q+12])
     - Third Check : Verify strength
         - Take the top card from the straight to represent hand strength
         - (Optional maybe suit as back-up???)

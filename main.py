@@ -1,5 +1,6 @@
 from typing import List
-
+suits = ["C", "D", "H", "S"]
+cards = [2,3,4,5,6,7,8,9,10,"J","Q","K","A"]
 
 cards_trans = {
     "2C": 0,
@@ -122,4 +123,3 @@ nested_card_trans = {
 def RankHand(hand : List[str][5]):
     # Sort the hand
     hand.sort()
-    
