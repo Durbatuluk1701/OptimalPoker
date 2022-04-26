@@ -152,6 +152,14 @@ def pretty_print_str_card(card_str : str, end = "\n"):
     (val, suit) = (card_str[:-1], card_str[-1])
     print(f"{val_to_str(val)} of {suit_to_string(suit)}s", end=end)
 
+def print_str_hand(hand : list[str]):
+    for i in hand:
+        pretty_print_str_card(i)
+
+def print_int_hand(hand : list[int]):
+    for i in hand:
+        pretty_print_int_card(i)
+
 def mod_hand(mod_class, hand):
     return [a % mod_class for a in hand]
 
