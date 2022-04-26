@@ -77,4 +77,44 @@ def three_of_a_kind(hand: List[int][5]) -> Tuple[int, int, int]:
     if (k == l == m):
         return (k, j, i)
     else:
-        return (-1, -1)
+        return (-1, -1, -1)
+
+def two_pair(hand: List[int][5]) -> Tuple[int, int, int]:
+    """
+    Determines if a hand has a two pair
+    Assumes hand sorted and modded
+
+    Return: (a,b,c) 2 a's, 2 b's; a > b, c = high card or (-1, -1) if not a 2 pair
+    """
+    [i, j, k, l, m] = hand
+
+    if (i == j):
+        if (k == l):
+            return (k, i, m)
+        elif (l == m):
+            return (l, i, k)
+        else:
+            return (-1,-1,-1)
+    elif (j == k) and (l == m):
+        return (l, j, i)
+    else:
+        return (-1, -1, -1)
+
+def pair(hand: List[int][5]) -> Tuple[int, int, int, int]:
+    """
+    Determines if a hand has a pair
+    Assumes hand sorted and modded
+
+    Return: (a,b,c,d) 2 a's, b > c > d or (-1, -1, -1, -1) if not a pair
+    """
+    [i, j, k, l, m] = hand
+
+    if i == j:
+        return (i, m, l, k)
+    if j == k:
+        return (j, m, l, i)
+    if k == l:
+        return (k, m, j, i)
+    if l == m:
+        return (l, k, j, i)
+    return (-1, -1, -1, -1)
