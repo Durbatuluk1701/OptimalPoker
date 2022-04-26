@@ -234,13 +234,13 @@ def DecodeHand(handCode : int) -> str:
     if (handCode & (1 << 23)):
         # Single pair
         [h3, h2, h1, pair] = [val_to_str((handCode >> 4*i) & 15) for i in range(4)]
-        return f"Pair - {pair}s, {h1}, {h2}, {h3}, {h4}"
+        return f"Pair - {pair}s, {h1}, {h2}, {h3}"
     else:
         # must be only a highcard
         [h5, h4,h3,h2,h1] = [val_to_str((handCode >> 4*i) & 15) for i in range(5)]
         return f"High Card - {h1}, {h2}, {h3}, {h4}, {h5}"
 
-def CompareHands(handA, handB) -> bool:
+def CompareHands(handA : list[int], handB : list[int]) -> bool:
     """
     Takes 2 hands 'a' and 'b'
     Returns true if 'a' is better than 'b' and would win

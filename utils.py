@@ -14,8 +14,19 @@ reverse_val_trans = {
     9: "Jack",
     10: "Queen",
     11: "King",
-    12: "Ace",
-    # Multi purpose if needed
+    12: "Ace"
+}
+
+reverse_val_str_trans = {
+    "2": "2",
+    "3": "3",
+    "4": "4",
+    "5": "5",
+    "6": "6",
+    "7": "7",
+    "8": "8",
+    "9": "9",
+    "10": "10",
     "J": "Jack",
     "Q": "Queen",
     "K": "King",
@@ -143,10 +154,10 @@ nested_card_trans = {
     }
 }
 
-def val_to_str(val):
+def val_to_str(val : int):
     return reverse_val_trans[val]
 
-def suit_to_string(suit):
+def suit_to_string(suit : str):
     if (suit == "C"):
         return "Club"
     elif (suit == "D"):
@@ -156,13 +167,13 @@ def suit_to_string(suit):
     else:
         return "Spade"
 
-def pretty_print_int_card(card_int : int, end = "\n"):
+def pretty_print_int_card(card_int : int, end : str = "\n"):
     (val, suit) = (card_int % 13, suits[card_int % 4])
     print(f"{val_to_str(val)} of {suit_to_string(suit)}s", end=end)
 
-def pretty_print_str_card(card_str : str, end = "\n"):
+def pretty_print_str_card(card_str : str, end : str = "\n"):
     (val, suit) = (card_str[:-1], card_str[-1])
-    print(f"{val_to_str(val)} of {suit_to_string(suit)}s", end=end)
+    print(f"{reverse_val_str_trans[val]} of {suit_to_string(suit)}s", end=end)
 
 def print_str_hand(hand : list[str]):
     for i in hand:
@@ -172,7 +183,7 @@ def print_int_hand(hand : list[int]):
     for i in hand:
         pretty_print_int_card(i)
 
-def mod_hand(mod_class, hand):
+def mod_hand(mod_class : int, hand : list[int]):
     return [a % mod_class for a in hand]
 
 def hand_to_number_hand(hand: list[str]) -> list[int]:

@@ -8,9 +8,9 @@ class Game:
         self.playerRange = range(self.numberOfPlayers)
         self.Shuffle()
         self.ResetHands()
-        self.house = []
+        self.house : list[int] = []
     def ResetHands(self):
-        self.hands = {i: [] for i in self.playerRange}
+        self.hands : dict[int, list[int]] = {i: [] for i in self.playerRange}
     def Shuffle(self):
         self.deck = [i for i in range(52)]
         random.shuffle(self.deck)
@@ -32,8 +32,8 @@ class Game:
     def River(self):
         # River the 5th card
         self.house.append(self.deck.pop())
-    def GenBest5_Set(self, best7) -> set:
-        genSet = set()
+    def GenBest5_Set(self, best7 : list[int]) -> set[tuple[int,int,int,int,int]]:
+        genSet : set[tuple[int,int,int,int,int]] = set()
         for i in range(7):
             for j in range(i + 1, 7):
                 for k in range(j + 1, 7):
@@ -46,16 +46,16 @@ class Game:
                                               best7[m]]))
         return genSet
 
-    def PickWinner(self):
+    def PickWinner(self) -> tuple[int, int, list[int]]:
         # For each of the hands, we need to calculate the best possible hand
         # 7 cards, choose 5 so 7 c 5 -> 7! / 5!*2! -> 21 choices per player
-        playerHandCombos = {
+        playerHandCombos : dict[int, set[tuple[int,int,int,int,int]]]= {
             i : set() for i in self.playerRange
         }
         for playerNum in self.playerRange:
             best_7_cards = self.hands[playerNum] + self.house
             playerHandCombos[playerNum] = self.GenBest5_Set(best_7_cards)
-        playerBestHand = {
+        playerBestHand : dict[int, tuple[int, list[int]]] = {
             i : (0,[]) for i in self.playerRange
         }
         # Foreach player, pick best hand they could make
