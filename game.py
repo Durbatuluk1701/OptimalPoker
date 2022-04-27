@@ -17,12 +17,16 @@ class Game:
         self.ResetHands()
         self.house : list[int] = []
         self.pot = 0
+        self.current_bet = 0
         # Default dealer to player 0
         self.dealer = 0
         self.playerPurses = { i : 0 for i in self.playerRange }
+        self.playerStakes = { i : 0 for i in self.playerRange }
     def Reset(self):
         self.house = []
         self.pot = 0
+        self.current_bet = 0
+        self.playerStakes = { i : 0 for i in self.playerRange}
         self.ResetHands()
         self.Shuffle()
     def ResetHands(self):
@@ -89,21 +93,41 @@ class Game:
                 bestPlayer, (handCode, bestHand) = playerNum, playerBestHand[playerNum]
         return (bestPlayer, handCode, bestHand)
     
-    def ProcessBet(self, playerNum : int):
+    def ProcessBet(self, playerNum : int) -> int:
         """
         Processes a bet for player "playerNum"
         Automatically withdraws from purse and adds to pot
+        Return values (-1 = Fold, 0 = Call, 1 = Raise)
         """
         while True:
             try:
                 bet = input(f"Player {playerNum} Bet (F to Fold): ")
                 if (bet.upper() == "F" or bet.upper() == "FOLD"):
-                    self.FoldPlayer(playerNum)
+                    # self.FoldPlayer(playerNum)
+                    return -1
                 betAmount = int(bet)
-                if (self.playerPurses[playerNum] >= betAmount):
+                if (betAmount < self.current_bet):
+                    # They are trying to bet under current call
+                    # 1. They have insufficent funds so must go all-in
+                    # 2. They must fold
+                    if (self.playerPurses[playerNum] == betAmount):
+                        # They are going all in
+                        # TODO because of this we neeed to be able to pay side pots
+                        self.playerPurses[playerNum] -= betAmount
+                        self.pot += betAmount
+                        return 0
+                    else:
+                        print(f"Invalid bet, must call current bet '{self.current_bet}' to stay in")
+                elif (self.playerPurses[playerNum] >= betAmount):
                     self.playerPurses[playerNum] -= betAmount
                     self.pot += betAmount
-                    return
+                    if (betAmount == self.current_bet):
+                        # It was a call
+                        return 0
+                    else:
+                        # it was a raise
+                        self.current_bet = betAmount
+                        return 1
                 else:
                     print("Invalid Bet, insufficient funds in purse")
             except ValueError:
@@ -114,20 +138,35 @@ class Game:
 
     def CollectAllBets(self):
         # TODO make betting order proper, make sure calls occur
-        for playerNum in self.playerRange:
+        betQueue = [i for i in self.playerRange]
+        # Keep going until everyone has done betting
+        while len(betQueue) > 0:
+            # Want to pop in front order
+            playerNum = betQueue.pop(0)
             self.ShowPot()
             self.ShowHouse()
             self.ShowHand(playerNum)
-            if not DEBUG:
-                self.ShowPlayerPurse(playerNum)
-                self.ProcessBet(playerNum)
+            self.ShowPlayerPurse(playerNum)
+            playerAction = self.ProcessBet(playerNum)
+            if (playerAction == -1):
+                self.FoldPlayer(playerNum)
+            elif (playerAction == 0):
+                # Call - no appending needed
+                pass
+            elif (playerAction == 1):
+                # Raised, must append all the old players to re-bet
+                tempQueue = [i for i in self.playerRange]
+                tempQueue = tempQueue[:tempQueue.index(playerNum)]
+                betQueue = betQueue + tempQueue
+            else:
+                raise Exception("How")
             # Keep info hidden? idk
             # clear_screen()
             pass
     def ShowPlayerPurse(self, playerNum : int):
         print(f"Player {playerNum} Purse: {self.playerPurses[playerNum]}")
     def ShowPot(self):
-        print(HOUSE_FORM.format(f"Current Pot: {self.pot}"))
+        print(HOUSE_FORM.format(f"Pot: {self.pot}"))
     def ShowHouse(self):
         print("House: ", end="")
         pretty_print_hand_array(self.house)
@@ -149,7 +188,7 @@ class Game:
             self.DealHands()
             # Process first betting
             self.CollectAllBets()
-            print(HOUSE_FORM.format("\tFLOP\t"))
+            print(HOUSE_FORM.format("FLOP"))
             self.Card_Flop()
             self.CollectAllBets()
             print(HOUSE_FORM.format("RUN"))
