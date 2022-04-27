@@ -186,7 +186,7 @@ def RankHand(hand: list[int]) -> int:
         return (1 << 23) | a << 12 | b << 8 | c << 4 | d
 
     # Check high card/default case
-    [e, d, c, b, a] = hand
+    [e, d, c, b, a] = mod13_hand
     return (a << 16) | (b << 12) | (c << 8) | (d << 4) | e
 
 def DecodeHand(handCode : int) -> str:

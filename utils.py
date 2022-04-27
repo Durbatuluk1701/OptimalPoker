@@ -1,3 +1,11 @@
+from os import system, name as sys_name
+
+def clear_screen():
+    if sys_name == "nt":
+        system("cls")
+    else:
+        system("clear")
+
 suits = ["C", "D", "H", "S"]
 cards = [2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K", "A"]
 
@@ -174,6 +182,12 @@ def pretty_print_int_card(card_int : int, end : str = "\n"):
 def pretty_print_str_card(card_str : str, end : str = "\n"):
     (val, suit) = (card_str[:-1], card_str[-1])
     print(f"{reverse_val_str_trans[val]} of {suit_to_string(suit)}s", end=end)
+
+def pretty_print_hand_array(hand : list[int], end : str = "\n"):
+    print("[", end="")
+    for cardIndex in range(len(hand)):
+        pretty_print_int_card(hand[cardIndex], end=(", " if cardIndex != len(hand) - 1 else ""))
+    print("]", end=end)
 
 def print_str_hand(hand : list[str]):
     for i in hand:

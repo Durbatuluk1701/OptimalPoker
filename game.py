@@ -1,14 +1,30 @@
 import random
 
-from hands import RankHand
+from hands import DecodeHand, RankHand
+from utils import clear_screen, pretty_print_hand_array
+
+DEBUG = True
+
+HOUSE_FORM = "~~~~~~~\t\t{}\t\t~~~~~~~"
 
 class Game:
     def __init__(self, numberOfPlayers : int):
+        if numberOfPlayers < 2:
+            raise Exception("Require at least 2 players")
         self.numberOfPlayers = numberOfPlayers
         self.playerRange = range(self.numberOfPlayers)
         self.Shuffle()
         self.ResetHands()
         self.house : list[int] = []
+        self.pot = 0
+        # Default dealer to player 0
+        self.dealer = 0
+        self.playerPurses = { i : 0 for i in self.playerRange }
+    def Reset(self):
+        self.house = []
+        self.pot = 0
+        self.ResetHands()
+        self.Shuffle()
     def ResetHands(self):
         self.hands : dict[int, list[int]] = {i: [] for i in self.playerRange}
     def Shuffle(self):
@@ -21,15 +37,15 @@ class Game:
         # Deal second card
         for i in self.playerRange:
             self.hands[i].append(self.deck.pop())
-    def Flop(self):
+    def Card_Flop(self):
         # Flop the first 3 cards
         self.house.append(self.deck.pop())
         self.house.append(self.deck.pop())
         self.house.append(self.deck.pop())
-    def Run(self):
+    def Card_Run(self):
         # Run the 4th card
         self.house.append(self.deck.pop())
-    def River(self):
+    def Card_River(self):
         # River the 5th card
         self.house.append(self.deck.pop())
     def GenBest5_Set(self, best7 : list[int]) -> set[tuple[int,int,int,int,int]]:
@@ -45,7 +61,6 @@ class Game:
                                               best7[l],
                                               best7[m]]))
         return genSet
-
     def PickWinner(self) -> tuple[int, int, list[int]]:
         # For each of the hands, we need to calculate the best possible hand
         # 7 cards, choose 5 so 7 c 5 -> 7! / 5!*2! -> 21 choices per player
@@ -68,6 +83,89 @@ class Game:
         # Pick best overall player's hand
         bestPlayer, handCode, bestHand = -1, -1, []
         for playerNum in self.playerRange:
-            if playerBestHand[playerNum][0] > bestPlayer:
+            if DEBUG:
+                print(f"Player {playerNum} Best Hand Val: {playerBestHand[playerNum]}")
+            if playerBestHand[playerNum][0] > handCode:
                 bestPlayer, (handCode, bestHand) = playerNum, playerBestHand[playerNum]
         return (bestPlayer, handCode, bestHand)
+    
+    def ProcessBet(self, playerNum : int):
+        """
+        Processes a bet for player "playerNum"
+        Automatically withdraws from purse and adds to pot
+        """
+        while True:
+            try:
+                bet = input(f"Player {playerNum} Bet (F to Fold): ")
+                if (bet.upper() == "F" or bet.upper() == "FOLD"):
+                    self.FoldPlayer(playerNum)
+                betAmount = int(bet)
+                if (self.playerPurses[playerNum] >= betAmount):
+                    self.playerPurses[playerNum] -= betAmount
+                    self.pot += betAmount
+                    return
+                else:
+                    print("Invalid Bet, insufficient funds in purse")
+            except ValueError:
+                print("Please input a valid bet as an integer")
+
+    def FoldPlayer(self, playerNum : int):
+        raise Exception("TODO")
+
+    def CollectAllBets(self):
+        # TODO make betting order proper, make sure calls occur
+        for playerNum in self.playerRange:
+            self.ShowPot()
+            self.ShowHouse()
+            self.ShowHand(playerNum)
+            if not DEBUG:
+                self.ShowPlayerPurse(playerNum)
+                self.ProcessBet(playerNum)
+            # Keep info hidden? idk
+            # clear_screen()
+            pass
+    def ShowPlayerPurse(self, playerNum : int):
+        print(f"Player {playerNum} Purse: {self.playerPurses[playerNum]}")
+    def ShowPot(self):
+        print(HOUSE_FORM.format(f"Current Pot: {self.pot}"))
+    def ShowHouse(self):
+        print("House: ", end="")
+        pretty_print_hand_array(self.house)
+    def ShowHand(self, playerNum : int):
+        print(f"Player {playerNum} Hand: ", end="")
+        pretty_print_hand_array(self.hands[playerNum])
+
+
+    def BankruptPlayer(self, playerNum : int):
+        # When player "playerNum" goes bankrupt, the show must go on
+        raise Exception("TODO")
+    def Run_Game(self, buyIn : int):
+        # Set all purses to default buy in
+        self.playerPurses = { i : buyIn for i in self.playerRange }
+        # Start-up a game
+        while True:
+            self.Reset()
+            # TODO: Collect and assign blinds
+            self.DealHands()
+            # Process first betting
+            self.CollectAllBets()
+            print(HOUSE_FORM.format("\tFLOP\t"))
+            self.Card_Flop()
+            self.CollectAllBets()
+            print(HOUSE_FORM.format("RUN"))
+            self.Card_Run()
+            self.CollectAllBets()
+            print(HOUSE_FORM.format("RIVER"))
+            self.Card_River()
+            self.CollectAllBets()
+            (wPlayer, wHandVal, wHand) = self.PickWinner()
+            print(HOUSE_FORM.format("WINNERS!"))
+            print(f"Player {wPlayer} Won with: {DecodeHand(wHandVal)}")
+            # TODO Transfer money
+            playAgain = input("Play Again (y/n): ")
+            if (playAgain.upper() == "N"):
+                return
+            clear_screen()
+
+game = Game(2)
+game.Run_Game(100)
